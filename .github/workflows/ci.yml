@@ -1,0 +1,51 @@
+# CI：只做「安装依赖 + 构建检查」，不部署、不需要任何密钥。
+#
+# 触发：
+#   - push 到 main
+#   - 针对 main 的 Pull Request
+#
+# 需要的权限：仅读取仓库内容（contents: read）。
+# 不执行 Cloudflare Pages 部署，也不读写任何 Secret。
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# 同一分支连续推送时，取消上一次尚未结束的运行，避免排队浪费额度
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build check (Node 22)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          # package-lock.json 已提交，缓存 npm 下载目录可显著缩短安装时间
+          cache: npm
+
+      # 仓库根目录就是项目根目录（package.json / package-lock.json 在同一层），
+      # 因此无需 working-directory；npm ci 会严格按锁文件安装，锁文件与
+      # package.json 不一致时会直接失败——这正是我们想要的检查。
+      - name: Install dependencies
+        run: npm ci
+
+      # build = tsc -b && vite build：先做 TypeScript 类型检查，再产出生产包
+      - name: Build
+        run: npm run build

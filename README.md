@@ -1,11 +1,186 @@
-# ProductAI · V1.0
+# AI E-commerce Studio
 
-> **SMART E-COMMERCE COPYWRITER**
-> 让每一张商品图片，都能变成专业商品文案。
+> **SMART E-COMMERCE COPYWRITER · V1.0**
+> 上传一张商品图，得到可上架的文案、效果图与搜索关键词。
 
-ProductAI 是一个可自行部署的 AI 商品文案生成平台：上传一张商品图片，视觉模型先识别图片里**看得见**的内容，文本模型再结合你补充的商品信息，输出商品标题、核心卖点、商品介绍、营销文案与 SEO 关键词。支持中文 / English / 中英双语，适配淘宝、拼多多、抖音、小红书、通用电商、Amazon、eBay 七个平台。
+**状态**：本地可运行 · `npm run build` 通过 · 在线 Demo **待部署**
 
-前端 React + Vite + TypeScript + Tailwind CSS，后端使用 Cloudflare Pages Functions，同一套代码本地即可运行、也可直接部署到 Cloudflare Pages。
+一个面向电商卖家的 AI 内容工作台，覆盖「商品文案生成 / 商品效果图生成 / 智能 SEO 关键词」三条主线。前端 React + Vite + TypeScript + Tailwind CSS，后端是同一仓库里的 Cloudflare Pages Functions，**没有独立的后端服务器，也不需要我的电脑在线**。
+
+支持 OpenAI、DeepSeek、Google Gemini、Anthropic Claude 与任意 OpenAI 兼容接口；视觉模型、文本模型、图片模型三套配置相互独立，可以混搭不同服务商。未配置任何 Key 时，全站以**演示模式**运行并能走完整个流程，所有演示内容都有明确标注，不伪装成真实 AI 结果。
+
+---
+
+## 在线 Demo
+
+> **待部署**
+
+尚未部署到公网，因此这里不提供任何网址。完成 Cloudflare Pages 部署后，本节将更新为实际访问地址（并附 `/api/health` 的自检结果）。部署步骤见下方「部署」与文末 [§11](#11-部署到-cloudflare-pages)。
+
+本机运行方式见「快速开始」，默认地址 `http://localhost:5173`。
+
+---
+
+## 项目截图
+
+以下截图待补（首次部署后统一补入，路径已预留）。图片存放在 `docs/screenshots/`，补图后把「待补」替换为对应文件名即可。
+
+| 页面 | 内容 | 截图 |
+| --- | --- | --- |
+| 首页 | 品牌区、图片上传入口、能力概览、示例商品 | `docs/screenshots/01-home.png`（待补） |
+| 商品文案生成 | 12 项商品信息表单 + 5 张结果卡（可复制 / 编辑 / 单卡重生成） | `docs/screenshots/02-copywriting.png`（待补） |
+| AI 图片创作 | 7 种图片类型 / 12 个平台画幅 / 保真与创意模式 / 效果图与文字叠加 | `docs/screenshots/03-image-studio.png`（待补） |
+| 智能 SEO | 10 类关键词表 + 平台差异化文案块 + 覆盖统计 | `docs/screenshots/04-seo.png`（待补） |
+| AI 模型设置 | 接入模式切换、视觉 / 文本 / 图片三套端点、测试连接 | `docs/screenshots/05-model-settings.png`（待补） |
+
+---
+
+## 项目简介
+
+电商上架的痛点不是「写不出字」，而是**同一件商品要在多个平台写出不同风格的多套内容，还要不编造参数**。本项目把这条链路拆成三段可复用的能力：
+
+1. **识别**：视觉模型只描述图片里看得见的东西（类别、颜色、外观、形状、可见特征、可能场景），并显式列出「无法从图片确认」的属性——材质、尺寸、重量、性能、认证、品牌、功效等，一律不猜。
+2. **生成**：文本模型结合商家补充的信息，输出商品标题、3–5 条核心卖点、商品详细介绍、营销推广文案与 SEO 关键词；缺什么就用 `[待补充：xxx]` 占位，提醒商家补齐。
+3. **落地**：按平台输出不同结构（淘宝/天猫/京东的标题与详情关键词、拼多多的需求词、抖音/快手的视频标题与话题、小红书的笔记与种草正文、Amazon 的标题/五点/Description/Search Terms、eBay、Shopify、Etsy），并给出可直接交给图片模型的效果图提示词。
+
+**设计红线**：没有提供的信息不编造；没有调用真实模型时全程标注「演示数据」；任何一步失败都如实报错，不展示虚假成功。
+
+---
+
+## 功能说明
+
+状态说明：**已实现** = 真实可用；**演示可用** = 无 Key 时用本地模板 / 占位图跑通流程并明确标注；**未实现** = 当前版本没有。
+
+| 模块 | 状态 | 说明 |
+| --- | --- | --- |
+| 商品图片上传 | 已实现 | 点击 / 拖拽上传、预览、替换、删除；JPG / JPEG / PNG / WEBP，≤ 5MB；前端与后端双向校验（后端按文件头识别真实格式） |
+| 商品文案生成 | 已实现 | 标题、3–5 条卖点、详细介绍、营销文案、SEO 关键词；中 / 英 / 中英双语；5 种风格；12 个平台差异化 |
+| 结果卡片操作 | 已实现 | 一键复制、就地编辑、单卡片重新生成（复用上次识别结果、不重复调视觉模型）、复制全部结果 |
+| 图片识别分析 | 已实现 | 输出类别 / 颜色 / 外观 / 形状 / 可见特征 / 可能场景 + 置信度，并单列「无法确认」的属性 |
+| 纯文字生成模式 | 已实现 | 文本模型不支持图片（如 DeepSeek）时可切换：不调视觉模型、图片不会发给任何模型 |
+| AI 商品效果图 | 已实现 | 7 种图片类型、12 个平台画幅预设、6 种比例（1:1 / 4:5 / 3:4 / 16:9 / 9:16 / 自定义宽高）、一次 1–4 张、下载 / 删除 / 改提示词重生成、查看模型与参数 |
+| 原图保真 / 创意营销 | 已实现 | 保真模式强制要求上传原图、只允许改背景光线与构图；创意模式构图自由但不得把商品变成别的产品；两者都会提示「生成结果可能与实物有细节差异，请人工核对」 |
+| 图片文字叠加 | 已实现 | 文字由前端 Canvas 合成（位置 / 字号 / 颜色 / 半透明底衬）并导出 PNG，不依赖图像模型画字，避免错别字与虚假参数 |
+| 智能 SEO 关键词 | 已实现 | 10 类关键词（核心 / 属性 / 长尾 / 场景 / 人群 / 需求 / 品牌 / 竞品 / 英文 / 小红书话题），每条含搜索意图、推荐位置、重要程度、是否需要人工确认 |
+| 关键词编辑与检查 | 已实现 | 可编辑 / 删除 / 新增、整组复制、跨组去重并展示「已去除 N 个重复词」、覆盖统计；不输出搜索量 / 排名 / 竞争度等没有数据源的数字 |
+| 平台差异化文案块 | 已实现 | 淘宝、天猫、京东、拼多多、抖音、快手、小红书、Amazon、eBay、Shopify、Etsy、通用电商各自的文案结构 |
+| 多模型接入 | 已实现 | 模式 A 平台默认（服务端环境变量）与模式 B 用户自带 Key（BYOK）；视觉 / 文本 / 图片三套端点可来自不同服务商 |
+| 模型测试连接 | 已实现 | 真实发起一次最小请求并回显耗时与模型名；401 / 402 / 429 / 模型不存在 / 网络错误分别给出可操作的提示 |
+| 演示模式 | 演示可用 | 无 Key 时全站可跑通；文案与关键词用本地模板、效果图用本地 SVG 占位图，全部标注「演示数据」 |
+| 生成结果持久化 / 账号系统 | 未实现 | 无需登录，刷新页面后结果不保留；V1.0 没有数据库 |
+| 真实搜索量 / 竞争度数据 | 未实现 | 需要接入第三方数据源；当前关键词只标注为「AI 相关性建议」 |
+| 生成图片云端存储 | 未实现 | 图片以 base64 直接返回，未接入 R2 或对象存储 |
+
+---
+
+## 项目特点
+
+- **本地跑的就是线上那一份后端代码**。`npm run dev` 用自写的 Vite 插件把 Node 的 req/res 转成 Web `Request`/`Response`，再 `ssrLoadModule` 加载 `functions/api/*.ts`——不需要登录 Cloudflare、不需要单独起后端进程，也就不会出现「本地能跑、部署就崩」的两套实现。
+- **前后端共用一份类型契约**。`shared/types.ts` 是唯一来源，前端 `src/types/index.ts` 直接 re-export，平台清单、图片类型、画幅、关键词分类、文案块结构都在这里定义并同时驱动前后端。
+- **平台规范是配置表，不是散落在代码里的字符串**。`PLATFORM_IMAGE_SPEC`（12 个平台的画幅与风格）、`IMAGE_TYPE_META`（7 种图片类型）、`PLATFORM_COPY_FORMATS`（12 个平台的文案块）都可以直接改表，无需动组件。
+- **Key 全程不碰浏览器**。平台默认 Key 只读服务端环境变量；用户自带 Key 只在单次请求中经 HTTPS 传给 Functions，用完即丢弃，不写 localStorage、不写日志、不回显（日志里连 `?key=` 与 `Bearer` 都会被打码）。
+- **自定义 Base URL 走白名单**。仅 https、禁止 IP 字面量与私网、域名须命中内置白名单或环境变量追加；本机回环调试需要一个显式开关，线上默认关闭。
+- **模型能力是硬校验，不是文案提醒**。纯文本模型（如 DeepSeek）在前后端都被拒绝作为视觉模型；把图片传给只支持文本的模型会直接报错，绝不会静默丢图。
+- **失败可诊断**。网络错误会区分「浏览器连不上本站接口」与「后端连不上服务商」，并细分 DNS 失败、连接被拒、TLS 失败、连接超时、端口不可用；401 会把服务商原文与 Key 形态判断（OpenAI / Anthropic / Gemini 前缀）一起给出来。
+- **演示模式是显式状态，不是兜底假数据**。结果卡、图片、文案块上都有「演示数据」标注，接口 meta 里也写明 provider 与模型为模板。
+
+---
+
+## 技术栈
+
+| 层 | 技术 | 说明 |
+| --- | --- | --- |
+| 前端 | React 18、Vite 5、TypeScript 5、Tailwind CSS 3.4、react-router-dom 6、lucide-react | Tailwind 固定 3.4（生态稳定、构建可预期，不引入 4.x 迁移风险） |
+| 后端 | Cloudflare Pages Functions（`functions/api/*.ts`，仅用标准 Web API） | 与前端同仓库、同类型，部署即生效；无 Node 内置模块依赖 |
+| 共享层 | `shared/types.ts` 单一契约 | 前后端类型与配置表同源，杜绝字段漂移 |
+| 本地开发 | 自写 Vite 插件 `scripts/devApiPlugin.ts` | dev / preview 都能直接跑 Functions 代码 |
+| 模型接入 | OpenAI、DeepSeek、Google Gemini、Anthropic Claude、OpenAI 兼容接口；图片侧 OpenAI GPT Image、Gemini Image、DeepSeek 协议通道、自定义接口 | 每家单独适配请求格式，不假设彼此兼容 |
+| 部署 | Cloudflare Pages（`wrangler.toml` + `_routes.json` + `_headers` + `_redirects`） | 静态资源 + Functions 同源发布，SPA 路由与 API 互不干扰 |
+
+生产构建实测（`npm run build`，1608 个模块）：
+
+```
+dist/index.html                 0.95 kB │ gzip:   0.68 kB
+dist/assets/index-*.css        41.56 kB │ gzip:   7.26 kB
+dist/assets/index-*.js        385.45 kB │ gzip: 129.12 kB
+```
+
+---
+
+## 快速开始
+
+```bash
+git clone https://github.com/AZZZ-code/ai-ecommerce-studio.git   # 或直接下载 ZIP
+cd ai-ecommerce-studio
+npm install
+npm run dev          # → http://localhost:5173
+```
+
+**不需要任何 Key 就能打开全站**：默认进入演示模式，三个生成页都能走完流程。
+
+想接真实模型（两种方式，任选）：
+
+- **方式 A · 平台默认**：`cp .dev.vars.example .dev.vars`，填入 `DEFAULT_PROVIDER` 与对应服务商的 `*_API_KEY`（图片另配 `IMAGE_PROVIDER` + `*_IMAGE_API_KEY`），重启 `npm run dev`。
+- **方式 B · 用户自带 Key（BYOK）**：直接打开 `/models` → 选「B · 用户自带 API」→ 填服务商 / Base URL / Key / 模型名 → 测试连接 → 保存（只保存服务商与模型名，**Key 不进任何存储**）。
+
+其他脚本：
+
+```bash
+npm run build      # tsc -b && vite build（类型检查 + 生产构建）
+npm run preview    # 用 dist 起本地预览，且同样带 /api/*
+npm run typecheck  # 只做类型检查
+```
+
+页面路由：`/` 首页 · `/generate` 商品文案 · `/studio` AI 图片创作 · `/seo` 智能 SEO · `/models` 模型设置 · `/about` 项目介绍。
+
+---
+
+## 部署
+
+推荐 **Cloudflare Pages**（前端静态资源与 Functions 同源发布）：
+
+1. Dashboard → Workers & Pages → Create → Pages → Connect to Git，选择本仓库；
+2. 构建配置：Framework `Vite`、Build command `npm run build`、Output directory `dist`、Root directory 留空（仓库根即项目根）；
+3. Settings → Environment variables 填入服务端变量（至少 `DEFAULT_PROVIDER` + 一个文本模型 Key；出图另配 `IMAGE_PROVIDER` + 图片 Key），**不要把 `ALLOW_LOOPBACK_BASE_URL` 带上线**；
+4. 部署完成后访问 `https://<你的域名>/api/health`，返回 `{"ok":true,"runtime":"pages-functions",...}` 即表示后端已就绪。
+
+也可以用命令行：`wrangler pages deploy dist --project-name <项目名>`（本项目已提供 `wrangler.toml`）。
+
+完整的变量清单、Secrets 表、上线检查清单、线上限制（单请求约 30 秒、限流为单实例内存计数、图片以 base64 返回）见 [§11](#11-部署到-cloudflare-pages)。
+
+---
+
+## GitHub 仓库
+
+- 地址：<https://github.com/AZZZ-code/ai-ecommerce-studio>
+- 分支：`main`（本地与远端同步）
+- 仓库内容：源码 + `functions/` + `shared/` + `public/` + 配置文件；`node_modules/`、`dist/`、`.dev.vars`、`.env*`、`.tmp/` 均已忽略
+- 注意：仓库里**没有任何真实 Key**，只有 `.dev.vars.example` 模板（键为空）
+
+> 小提示：如果你所在网络访问 `github.com:443` 不稳定，可以走 SSH 443 端口：
+> `git remote set-url origin ssh://git@ssh.github.com:443/AZZZ-code/ai-ecommerce-studio.git`
+
+---
+
+## 详细文档
+
+下面的章节是完整的技术文档（接口、架构、安全、验证记录），按需查阅。
+
+1. [功能一览](#1-功能一览) — 逐模块的已实现清单
+2. [技术栈与选型说明](#2-技术栈与选型说明) — 每个技术选择的原因
+3. [目录结构](#3-目录结构)
+4. [本地运行](#4-本地运行)
+5. [环境变量](#5-环境变量)
+6. [两种接入模式](#6-两种接入模式)
+7. [后端接口](#7-后端接口) — 6 个接口的请求 / 响应 / 错误码
+8. [架构：统一模型适配层](#8-架构统一模型适配层)
+9. [安全设计](#9-安全设计)
+10. [演示模式](#10-演示模式)
+11. [部署到 Cloudflare Pages](#11-部署到-cloudflare-pages) — 含 Secrets 表与上线检查清单
+12. [已验证内容](#12-已验证内容) — 构建、适配器单测、接口联调、浏览器 E2E
+13. [已知限制（V1.0）](#13-已知限制v10)
+14. [路线图](#14-路线图)
+15. [免责声明](#15-免责声明)
 
 ---
 
@@ -24,7 +199,7 @@ ProductAI 是一个可自行部署的 AI 商品文案生成平台：上传一张
 | AI 图片创作页 | 上传商品原图 → 选图片类型（7 种）/ 平台（12 个）/ 画幅（6 种 + 自定义宽高）/ 保真或创意模式 → AI 生成效果图；支持一次出 1–4 张、下载、删除、改提示词重生成、查看模型与参数 |
 | 智能 SEO 页 | 一次生成 10 类关键词（核心 / 属性 / 长尾 / 场景 / 人群 / 需求 / 品牌 / 竞品 / 英文 / 小红书话题）+ 按平台格式输出的上架文案块；关键词可编辑、删除、新增、整组复制，附覆盖统计与去重说明 |
 | 图片文字叠加 | 画面里的文字不用图像模型画，而是前端 Canvas 合成：可调位置 / 字号 / 颜色 / 半透明底衬，直接导出 PNG，避免错别字与虚假参数 |
-| 后端 | `POST /api/generate`、`POST /api/generate-image`、`POST /api/seo-keywords`、`POST /api/test-connection`、`GET /api/models`，含格式 / 大小 / 枚举 / 限流 / 超时 / 上游错误处理 |
+| 后端 | `POST /api/generate`、`POST /api/generate-image`、`POST /api/seo-keywords`、`POST /api/test-connection`、`GET /api/models`、`GET /api/health`，含格式 / 大小 / 枚举 / 限流 / 超时 / 上游错误处理与日志脱敏 |
 
 文案生成永远遵守一条红线：**没有提供的信息不编造**。模型会被要求用 `[待补充：xxx]` 占位提醒商家自己补齐材质、尺寸、重量、性能、认证、品牌、功效等无法从图片确认的内容。
 
@@ -50,10 +225,14 @@ ProductAI/
 ├── public/
 │   ├── favicon.svg
 │   ├── _redirects                 # SPA 路由回退（Cloudflare Pages）
+│   ├── _routes.json               # 只让 /api/* 走 Functions
+│   ├── _headers                   # 安全响应头与静态资源缓存策略
 │   └── samples/                   # 三张示例商品图（SVG，前端会转成 PNG 上传）
 │       ├── sample-bottle.svg
 │       ├── sample-earbuds.svg
 │       └── sample-tote.svg
+├── docs/
+│   └── screenshots/               # README 截图（待补，见「项目截图」）
 ├── shared/
 │   └── types.ts                   # 前后端共用契约：枚举、payload、响应、平台/风格元数据
 ├── src/
@@ -61,11 +240,11 @@ ProductAI/
 │   │                              # Alert / Spinner / ResultCard / AnalysisPanel / GeneratingPanel
 │   │                              # KeywordTable（关键词表）/ TextOverlayEditor（Canvas 文字合成）
 │   ├── hooks/                     # useCopy / useModelCatalog
-│   ├── lib/                       # utils(cn、复制、格式化) / image(校验、URL→File)
+│   ├── lib/                       # utils(cn、复制、格式化) / image(校验、URL→File) / keyShape(Key 形态提示)
 │   ├── pages/                     # HomePage / GeneratePage / StudioPage（图片创作）/ SeoPage（智能 SEO）
 │   │                              # ModelsPage / AboutPage / NotFoundPage
 │   ├── services/
-│   │   ├── api.ts                 # 三个接口的 fetch 封装（超时、错误归一化）
+│   │   ├── api.ts                 # 6 个接口的 fetch 封装（超时、错误归一化、健康探针）
 │   │   ├── demo.ts                # 演示数据与文案模板
 │   │   ├── demoStudio.ts          # 图片创作 / SEO 的演示数据（含本地 SVG 占位图）
 │   │   ├── pending.ts             # 首页 → 生成页的图片/示例交接（内存）
@@ -80,12 +259,14 @@ ProductAI/
 │       ├── seo-keywords.ts        # POST /api/seo-keywords
 │       ├── test-connection.ts     # POST /api/test-connection
 │       ├── models.ts              # GET  /api/models
+│       ├── health.ts              # GET  /api/health（后端自检，不返回任何 Key）
 │       └── _lib/
 │           ├── ai/
 │           │   ├── types.ts       # ProviderAdapter / ProviderCall / joinEndpoint
 │           │   ├── openai.ts      # OpenAI 与 OpenAI 兼容接口（共用实现）
 │           │   ├── gemini.ts      # Gemini generateContent + inlineData
 │           │   ├── claude.ts      # Anthropic messages + image block
+│           │   ├── deepseek.ts    # DeepSeek chat/completions（纯文本模型，绝不接收图片）
 │           │   ├── catalog.ts     # 服务商注册表 + 模型能力/视觉能力判定
 │           │   ├── router.ts      # ModelRouter：模式 A/B 解析、视觉/文本分离调用
 │           │   ├── json.ts        # 超时 fetch、上游错误映射、JSON 抽取
@@ -93,6 +274,7 @@ ProductAI/
 │           │       ├── types.ts   # ImageProviderAdapter / size 预设 / mime 推断
 │           │       ├── openaiImage.ts   # /images/edits（有原图）与 /images/generations
 │           │       ├── geminiImage.ts   # generateContent + responseModalities:[TEXT,IMAGE]
+│           │       ├── deepseekImage.ts # DeepSeek 图片通道（协议预留，官方暂无图片模型）
 │           │       ├── customImage.ts   # 自定义 OpenAI 兼容图片接口
 │           │       ├── catalog.ts # 图片服务商注册表与可选模型
 │           │       └── router.ts  # 图片端解析、BYOK 校验、生成与连通性测试
@@ -107,6 +289,7 @@ ProductAI/
 │           └── types.ts           # Env / PagesContext / PagesFunction（不依赖 workers-types）
 ├── scripts/devApiPlugin.ts        # Vite 中间件，把 /api/* 转发给 Functions
 ├── index.html · package.json · tsconfig*.json · tailwind.config.js · postcss.config.js
+├── wrangler.toml                  # Cloudflare Pages 项目配置（不含任何密钥）
 ├── .dev.vars.example              # 环境变量示例
 └── README.md
 ```
@@ -115,7 +298,7 @@ ProductAI/
 
 ## 4. 本地运行
 
-环境要求：Node.js ≥ 18（开发时使用 Node 24 / npm 11 验证通过）。
+环境要求：Node.js ≥ 20（`package.json` 已声明 `engines`；开发时使用 Node 24 / npm 11 验证通过）。
 
 ```bash
 npm install
@@ -751,7 +934,7 @@ curl -s http://127.0.0.1:5173/api/health
 ## 12. 已验证内容
 
 - `npm run build`（`tsc -b` 严格模式 + Vite 生产构建）通过；
-- 三个接口在无 Key / 错误 Key / 正确 Key（本地 mock 的 OpenAI 兼容服务）三种状态下的行为符合预期；
+- 四个生成类接口在无 Key / 错误 Key / 正确 Key（本地 mock 的 OpenAI 兼容服务）三种状态下的行为符合预期；
 - 文件格式、5MB 上限、枚举白名单、限流、SSRF 白名单均按预期拒绝；
 - DeepSeek 图片通道专项（22 项适配器单测 + 16 项 UI E2E）：URL 拼接为 `/images/generations`、Bearer 鉴权、`response_format=b64_json`、传原图直接 `IMAGE_UNSUPPORTED` 且零网络请求、未填模型名 `INVALID_MODEL_CONFIG` 且不发请求、`Model Not Exist` → `MODEL_NOT_FOUND`、401 → `UPSTREAM_UNAUTHORIZED` 且错误串不含 Key、空 `data` → `BAD_MODEL_OUTPUT`、能力清单如实标注「没有公开的图片生成模型」且模型列表为空；
 - 三家 Provider 的请求格式（URL、鉴权头、图片字段、JSON 模式）与响应解析逐项对过桩测试；
