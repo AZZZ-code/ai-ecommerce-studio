@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-label="真无线蓝牙耳机示例图">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="800" y2="600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f5f8ff"/>
+      <stop offset="1" stop-color="#e6efff"/>
+    </linearGradient>
+    <linearGradient id="case" x1="290" y1="300" x2="520" y2="500" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#dbe6fb"/>
+    </linearGradient>
+    <linearGradient id="bud" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#cfdcf5"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#bg2)"/>
+  <circle cx="176" cy="150" r="96" fill="#ffffff" opacity="0.7"/>
+  <circle cx="650" cy="470" r="120" fill="#ffffff" opacity="0.55"/>
+  <ellipse cx="400" cy="510" rx="200" ry="26" fill="#2f63d6" opacity="0.12"/>
+
+  <!-- 充电盒盒盖（打开） -->
+  <path d="M262 268c0-30 24-54 54-54h168c30 0 54 24 54 54v18H262v-18z" fill="#eaf1ff" stroke="#c9d9f6" stroke-width="3"/>
+  <rect x="286" y="232" width="228" height="10" rx="5" fill="#ffffff" opacity="0.85"/>
+
+  <!-- 盒身 -->
+  <rect x="262" y="286" width="276" height="196" rx="34" fill="url(#case)" stroke="#c9d9f6" stroke-width="3"/>
+  <rect x="286" y="306" width="228" height="70" rx="22" fill="#b9cdf1" opacity="0.45"/>
+  <rect x="330" y="452" width="140" height="8" rx="4" fill="#93a9cf" opacity="0.6"/>
+
+  <!-- 指示灯 -->
+  <circle cx="400" cy="392" r="8" fill="#22c55e" opacity="0.9"/>
+  <rect x="360" y="408" width="80" height="6" rx="3" fill="#93a9cf" opacity="0.5"/>
+
+  <!-- 左右耳机 -->
+  <g transform="translate(196 330)">
+    <ellipse cx="42" cy="52" rx="44" ry="46" fill="url(#bud)" stroke="#c9d9f6" stroke-width="3"/>
+    <ellipse cx="42" cy="46" rx="22" ry="20" fill="#dfe8fa"/>
+    <path d="M42 92c-12 0-19 10-19 26s8 44 19 44 19-28 19-44-7-26-19-26z" fill="url(#bud)" stroke="#c9d9f6" stroke-width="3"/>
+    <circle cx="42" cy="150" r="5" fill="#a9bce0"/>
+  </g>
+  <g transform="translate(516 330)">
+    <ellipse cx="42" cy="52" rx="44" ry="46" fill="url(#bud)" stroke="#c9d9f6" stroke-width="3"/>
+    <ellipse cx="42" cy="46" rx="22" ry="20" fill="#dfe8fa"/>
+    <path d="M42 92c-12 0-19 10-19 26s8 44 19 44 19-28 19-44-7-26-19-26z" fill="url(#bud)" stroke="#c9d9f6" stroke-width="3"/>
+    <circle cx="42" cy="150" r="5" fill="#a9bce0"/>
+  </g>
+
+  <!-- 音波 -->
+  <g fill="none" stroke="#2f63d6" stroke-width="4" stroke-linecap="round" opacity="0.5">
+    <path d="M132 300c18-18 18-52 0-70"/>
+    <path d="M112 316c28-28 28-82 0-110"/>
+  </g>
+</svg>

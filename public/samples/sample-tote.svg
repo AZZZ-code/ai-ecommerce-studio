@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-label="简约帆布托特包示例图">
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="800" y2="600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f7f9fc"/>
+      <stop offset="1" stop-color="#e9eff8"/>
+    </linearGradient>
+    <linearGradient id="canvas" x1="280" y1="230" x2="520" y2="520" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f7f0e2"/>
+      <stop offset="1" stop-color="#ddcfb6"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#bg3)"/>
+  <circle cx="646" cy="158" r="92" fill="#ffffff" opacity="0.7"/>
+  <circle cx="158" cy="452" r="112" fill="#ffffff" opacity="0.5"/>
+  <ellipse cx="400" cy="524" rx="176" ry="22" fill="#7c6a4d" opacity="0.14"/>
+
+  <!-- 提手 -->
+  <path d="M340 232c0-58 26-92 60-92s60 34 60 92" fill="none" stroke="#c9b795" stroke-width="15" stroke-linecap="round"/>
+  <path d="M340 232c0-58 26-92 60-92s60 34 60 92" fill="none" stroke="#f2e8d6" stroke-width="7" stroke-linecap="round" opacity="0.85"/>
+
+  <!-- 包身 -->
+  <path d="M272 236h256l24 236c2 22-14 38-36 38H284c-22 0-38-16-36-38l24-236z" fill="url(#canvas)"/>
+  <path d="M272 236h256l6 62H266l6-62z" fill="#efe4cd"/>
+
+  <!-- 缝线 -->
+  <path d="M292 258h216" stroke="#c2b192" stroke-width="3" stroke-dasharray="8 8" stroke-linecap="round" opacity="0.9"/>
+  <path d="M296 492h208" stroke="#c2b192" stroke-width="3" stroke-dasharray="8 8" stroke-linecap="round" opacity="0.7"/>
+
+  <!-- 印花 -->
+  <circle cx="400" cy="376" r="52" fill="#ffffff" opacity="0.72"/>
+  <path d="M400 344l9.6 22.4 22.4 9.6-22.4 9.6L400 408l-9.6-22.4L368 376l22.4-9.6L400 344z" fill="#2f63d6"/>
+  <rect x="366" y="418" width="68" height="7" rx="3.5" fill="#2f63d6" opacity="0.55"/>
+
+  <!-- 侧边折痕 -->
+  <path d="M312 300l-8 210" stroke="#c2b192" stroke-width="2" opacity="0.5"/>
+  <path d="M488 300l8 210" stroke="#c2b192" stroke-width="2" opacity="0.5"/>
+</svg>

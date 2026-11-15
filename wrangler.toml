@@ -1,0 +1,30 @@
+# Cloudflare Pages 配置
+#
+# 这个文件让 `wrangler pages deploy dist` 与 Git 集成部署都能自动识别：
+#   - 产物目录 dist
+#   - 函数目录 functions/（Pages 会自动把 functions/ 打包成 Functions）
+#
+# 注意：这里只放「非密钥」的公开配置。
+# API Key 一律通过 Cloudflare Dashboard → Pages → Settings → Environment variables
+# （加密变量 / Secrets）或 `wrangler pages secret put` 注入，绝不写进本文件、绝不提交到 GitHub。
+
+name = "productai"
+compatibility_date = "2024-11-01"
+pages_build_output_dir = "dist"
+
+# 可选：为 Functions 打开 Node 兼容层。本项目后端只用标准 Web API
+# （fetch / atob / btoa / TextEncoder / Uint8Array），不需要 nodejs_compat，
+# 因此这里保持关闭以减小冷启动体积。若将来引入 Node 内置模块再打开：
+# compatibility_flags = ["nodejs_compat"]
+
+# 平台默认模型（模式 A）的「非密钥」部分可以在 Dashboard 里配，
+# 也可以解开下面的注释（密钥仍然必须在 Dashboard 配置为加密变量）：
+# [vars]
+# DEFAULT_PROVIDER = "deepseek"
+# DEFAULT_TEXT_PROVIDER = "deepseek"
+# DEFAULT_VISION_PROVIDER = "openai"
+# DEEPSEEK_TEXT_MODEL = "deepseek-chat"
+# OPENAI_VISION_MODEL = "gpt-4o-mini"
+# RATE_LIMIT_PER_MINUTE = "12"
+# AI_TIMEOUT_MS = "45000"
+# IMAGE_TIMEOUT_MS = "25000"

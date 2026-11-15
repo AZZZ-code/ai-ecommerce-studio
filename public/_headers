@@ -1,0 +1,19 @@
+# 静态资源安全响应头（Cloudflare Pages 的 _headers 语法）
+# 只对静态资源生效；/api/* 的响应头由 functions/ 自己设置（no-store + nosniff）。
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+  Cross-Origin-Opener-Policy: same-origin
+
+# 带 hash 的构建产物可以长缓存；index.html 必须每次回源校验，否则上线后用户看到旧版本。
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/samples/*
+  Cache-Control: public, max-age=86400

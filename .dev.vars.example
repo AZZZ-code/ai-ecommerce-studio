@@ -1,0 +1,104 @@
+# ==========================================================================
+# ProductAI 本地开发环境变量示例
+# 复制为 .dev.vars（本地开发 / wrangler pages dev 读取）后填入真实值。
+# 生产环境请在 Cloudflare Pages → Settings → Environment variables 配置。
+# 注意：所有密钥只存在于后端运行时，前端永远拿不到这些值。
+# ==========================================================================
+
+# ---- 模式 A：平台默认 API（管理员配置，普通用户无需填写 Key） ----
+
+# 默认服务商：openai | deepseek | gemini | claude | compatible
+DEFAULT_PROVIDER=openai
+
+# 视觉端 / 文本端可以分别指定服务商（例如视觉用 OpenAI、文案用 DeepSeek）
+# 留空则回落到 DEFAULT_PROVIDER；DeepSeek 没有视觉模型，不会被选为视觉端。
+DEFAULT_VISION_PROVIDER=
+DEFAULT_TEXT_PROVIDER=
+
+# OpenAI（也用于 OpenAI 官方接口）
+OPENAI_API_KEY=
+OPENAI_BASE_URL=https://api.openai.com/v1
+OPENAI_VISION_MODEL=gpt-4o-mini
+OPENAI_TEXT_MODEL=gpt-4o-mini
+
+# DeepSeek（OpenAI 兼容协议，只有文本模型：deepseek-chat / deepseek-reasoner）
+# 注意：DeepSeek 不支持图片输入，只能作为文本模型使用；给 DEEPSEEK_VISION_MODEL 填值也不会被采用。
+DEEPSEEK_API_KEY=
+DEEPSEEK_BASE_URL=https://api.deepseek.com
+DEEPSEEK_TEXT_MODEL=deepseek-chat
+DEEPSEEK_VISION_MODEL=
+
+# Google Gemini
+GEMINI_API_KEY=
+GEMINI_BASE_URL=https://generativelanguage.googleapis.com/v1beta
+GEMINI_VISION_MODEL=gemini-2.0-flash
+GEMINI_TEXT_MODEL=gemini-2.0-flash
+
+# Anthropic Claude
+ANTHROPIC_API_KEY=
+ANTHROPIC_BASE_URL=https://api.anthropic.com
+ANTHROPIC_VISION_MODEL=claude-3-5-sonnet-latest
+ANTHROPIC_TEXT_MODEL=claude-3-5-haiku-latest
+
+# OpenAI 兼容接口（DeepSeek、通义、智谱、Moonshot 等）
+COMPATIBLE_API_KEY=
+COMPATIBLE_BASE_URL=
+COMPATIBLE_VISION_MODEL=
+COMPATIBLE_TEXT_MODEL=
+
+# ---- 图片模型（AI 商品效果图，与文本/视觉模型完全独立） ----
+
+# 指定平台默认图片服务商：openai-image | gemini-image | deepseek-image | custom-image
+# 留空则自动选择第一个填了 Key 的服务商。
+IMAGE_PROVIDER=
+
+# OpenAI 图片（gpt-image-1 支持传入原图做编辑；dall-e-3 只能文生图）
+OPENAI_IMAGE_API_KEY=
+OPENAI_IMAGE_BASE_URL=https://api.openai.com/v1
+OPENAI_IMAGE_MODEL=gpt-image-1
+
+# Google Gemini 图片（gemini-2.5-flash-image 等）
+GEMINI_IMAGE_API_KEY=
+GEMINI_IMAGE_BASE_URL=https://generativelanguage.googleapis.com/v1beta
+GEMINI_IMAGE_MODEL=gemini-2.5-flash-image
+
+# DeepSeek 图片通道（按 OpenAI Images 兼容协议预留）
+# 注意：DeepSeek 官方目前只提供文本模型，没有公开的图片生成模型。
+# 填写后仅在你确认账户/兼容网关确实提供该图片模型时才有意义；模型名必填，调用失败会如实报错。
+DEEPSEEK_IMAGE_API_KEY=
+DEEPSEEK_IMAGE_BASE_URL=https://api.deepseek.com
+DEEPSEEK_IMAGE_MODEL=
+
+# 自定义图片接口（仅兼容 OpenAI Images API 的 /images/generations 与 /images/edits）
+CUSTOM_IMAGE_API_KEY=
+CUSTOM_IMAGE_BASE_URL=
+CUSTOM_IMAGE_MODEL=
+
+# 单次图片生成超时（毫秒，15s–180s）
+# 注意：Cloudflare Pages Functions 对单次请求约有 30 秒上限，
+# 线上如果服务商出图较慢，建议改成 25000 并选更快的图片模型。
+IMAGE_TIMEOUT_MS=120000
+
+# 平台默认图片输出质量 / 格式（standard | high / png | jpeg | webp）
+IMAGE_QUALITY=standard
+IMAGE_FORMAT=png
+
+# 可选：视觉模型白名单（逗号分隔的模型名，命中即视为支持图片输入）。
+# 一般不用填；只有在使用自定义兼容网关、且模型名不含 vision 特征时才需要。
+VISION_MODEL_ALLOWLIST=
+
+# ---- 安全 / 限流 ----
+
+# 用户自带 Base URL 的额外白名单（逗号分隔域名，只允许 https）
+# 默认已内置常见服务商域名；如需允许自建网关，在这里追加。
+ALLOW_CUSTOM_BASE_URL_HOSTS=
+
+# 是否允许 BYOK 使用 http://127.0.0.1 / http://localhost 这类本机地址。
+# 仅用于本地调试自建网关，默认关闭；线上环境请保持关闭。
+ALLOW_LOOPBACK_BASE_URL=false
+
+# 单 IP 限流（每分钟）
+RATE_LIMIT_PER_MINUTE=12
+
+# 单次模型调用超时（毫秒）
+AI_TIMEOUT_MS=60000
